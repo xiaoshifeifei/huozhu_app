@@ -1,0 +1,189 @@
+{
+    "pages": [ //pages数组中第一项表示应用启动页，参考：https://uniapp.dcloud.io/collocation/pages
+        {
+            "path": "pages/login/index",
+            "style": {
+                "navigationBarTitleText": "",
+                "navigationBarBackgroundColor": "#fff"
+            }
+        }, {
+            "path": "pages/index/index",
+            "style": {
+                "navigationBarTitleText": "首页",
+                "navigationBarBackgroundColor": "#0084FF",
+                "navigationBarTextStyle": "white"
+            }
+        }, {
+            "path": "pages/order/orderlist",
+            "style": {
+                "navigationBarTitleText": "订单"
+                    //"enablePullDownRefresh": true
+            }
+        }, {
+            "path": "pages/notice/index",
+            "style": {
+                "navigationBarTitleText": "消息"
+            }
+        }, {
+            "path": "pages/my/index",
+            "style": {
+                "navigationBarTitleText": "个人中心"
+            }
+        }, {
+            "path": "pages/register/index",
+            "style": {
+                "navigationBarTitleText": "注册",
+                "navigationBarBackgroundColor": "#fff"
+            }
+        }, {
+            "path": "pages/register/protocol",
+            "style": {
+                "navigationBarTitleText": "用户协议",
+                "navigationBarBackgroundColor": "#fff"
+            }
+        }, {
+            "path": "pages/findpwd/index",
+            "style": {
+                "navigationBarTitleText": "找回密码",
+                "navigationBarBackgroundColor": "#fff"
+            }
+        }, {
+            "path": "pages/company/index",
+            "style": {
+                "navigationBarTitleText": "公司信息",
+                "navigationBarBackgroundColor": "#fff"
+            }
+        }, {
+            "path": "pages/order/tmsorder",
+            "style": {
+                "navigationBarTitleText": "TMS下单",
+                "navigationBarBackgroundColor": "#fff"
+            }
+        }, {
+            "path": "pages/order/mulorder",
+            "style": {
+                "navigationBarTitleText": "多式联运下单",
+                "navigationBarBackgroundColor": "#fff"
+            }
+        }, {
+            "path": "pages/address/index",
+            "style": {
+                "navigationBarTitleText": "常用信息管理",
+                "navigationBarBackgroundColor": "#fff",
+                //"enablePullDownRefresh": true
+                "disableScroll": true,
+                "app-plus": {
+                    "bounce": "none"
+                }
+            }
+        }, {
+            "path": "pages/my/user/changeuserinfo",
+            "style": {
+                "navigationBarTitleText": "个人信息",
+                "navigationBarBackgroundColor": "#fff"
+            }
+        }, {
+            "path": "pages/my/user/changepwd",
+            "style": {
+                "navigationBarTitleText": "修改密码",
+                "navigationBarBackgroundColor": "#fff"
+            }
+        }, {
+            "path": "pages/my/about/aboutus",
+            "style": {
+                "navigationBarTitleText": "关于我们",
+                "navigationBarBackgroundColor": "#fff"
+            }
+        }, {
+            "path": "pages/my/about/version",
+            "style": {
+                "navigationBarTitleText": "版本说明",
+                "navigationBarBackgroundColor": "#fff"
+            }
+        }, {
+            "path": "pages/my/about/feedback",
+            "style": {
+                "navigationBarTitleText": "意见反馈",
+                "navigationBarBackgroundColor": "#fff"
+            }
+        }, {
+            "path": "pages/my/about/userprotocol",
+            "style": {
+                "navigationBarTitleText": "用户协议",
+                "navigationBarBackgroundColor": "#fff"
+            }
+        }, {
+            "path": "pages/address/address/addAndUpdate",
+            "style": {
+                "navigationBarTitleText": "新增地址",
+                "navigationBarBackgroundColor": "#fff"
+            }
+        }, {
+            "path": "pages/address/goods/addAndUpdate",
+            "style": {
+                "navigationBarTitleText": "新增物品",
+                "navigationBarBackgroundColor": "#fff"
+            }
+        }, {
+            "path": "pages/order/orderdetail",
+            "style": {
+                "navigationBarTitleText": "订单详情",
+                "navigationBarBackgroundColor": "#fff"
+            }
+        }, {
+            "path": "pages/order/logistics",
+            "style": {
+                "navigationBarTitleText": "物流信息",
+                "navigationBarBackgroundColor": "#fff"
+            }
+        }, {
+            "path": "pages/notice/noticeDetails/n_details",
+            "style": {
+                "enablePullDownRefresh": true,
+                "navigationBarTitleText": "系统通知",
+                "navigationBarBackgroundColor": "#fff",
+                "app-plus": {
+                    "titleNView": {
+                        "buttons": [{
+                            "text": "全部已读",
+                            "fontSize": "14px",
+                            "width": "80px"
+                        }]
+                    }
+                }
+            }
+        }
+    ],
+    "tabBar": {
+        "color": "#7a7e83",
+        "selectedColor": "#0faeff",
+        "backgroundColor": "#ffffff",
+        "list": [{
+            "pagePath": "pages/index/index",
+            "text": "首页",
+            "iconPath": "static/image/nav/index.png",
+            "selectedIconPath": "static/image/nav/index1.png"
+        }, {
+            "pagePath": "pages/order/orderlist",
+            "text": "订单",
+            "iconPath": "static/image/nav/order.png",
+            "selectedIconPath": "static/image/nav/order1.png"
+        }, {
+            "pagePath": "pages/notice/index",
+            "text": "消息",
+            "iconPath": "static/image/nav/msg.png",
+            "selectedIconPath": "static/image/nav/msg1.png"
+        }, {
+            "pagePath": "pages/my/index",
+            "text": "我的",
+            "iconPath": "static/image/nav/my.png",
+            "selectedIconPath": "static/image/nav/my1.png"
+        }]
+    },
+    "globalStyle": {
+        "navigationBarTextStyle": "black",
+        "navigationBarTitleText": "uni-app",
+        "navigationBarBackgroundColor": "#F8F8F8", //头部导航的颜色
+        "backgroundColor": "#F8F8F8"
+    }
+}

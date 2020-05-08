@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<meta name="viewport" content="initial-scale=1.0, user-scalable=no" />
+		<title>物流信息</title>
+	</head>
+	<!-- 引入elementui-->
+	<link rel="stylesheet" href="https://unpkg.com/element-ui/lib/theme-chalk/index.css" />
+	<script src="https://unpkg.com/vue/dist/vue.js"></script>
+	<script src="https://unpkg.com/element-ui/lib/index.js"></script>
+	<script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+	<script type="text/javascript" src="https://js.cdn.aliyun.dcloud.net.cn/dev/uni-app/uni.webview.1.5.1.js"></script>
+	<script type="text/javascript" src="https://webapi.amap.com/maps?v=1.4.15&key=ef12401c3096cf00abe27b498a62f4cb"></script>
+
+	<style>
+		body {
+			background: #ffffff;
+			padding: 0;
+			margin: 0 1px;
+		}
+
+		[v-cloak] {
+			display: none;
+		}
+
+		.content {
+			width: 100%;
+			position: relative;
+		}
+
+		.box {
+			width: 100%;
+			height: 100px;
+			background: #0084FF;
+			position: relative;
+			z-index: 90;
+		}
+
+		.box .box-con {
+			width: 100px;
+			height: 89px;
+			overflow: hidden;
+			position: absolute;
+			top: -2px;
+			right: -1px;
+		}
+
+		.box .box-text {
+			color: #0084FF;
+			text-align: center;
+			-webkit-transform: rotate(45deg);
+			-moz-transform: rotate(45deg);
+			-ms-transform: rotate(45deg);
+			-o-transform: rotate(45deg);
+			position: relative;
+			padding: 3px 0;
+			left: 3px;
+			top: 23px;
+			width: 128px;
+			background-color: #FFFFFF;
+		}
+
+		.box .box-text:before,
+		.box-text:after {
+			content: "";
+			position: absolute;
+			bottom: -3px;
+		}
+
+		.box .box-text:before {
+			left: 0;
+		}
+
+		.box .box-text:after {
+			right: 0;
+		}
+
+		.msg1 {
+			color: #FFFFFF;
+			position: absolute;
+			top: 30%;
+			left: 6%;
+		}
+
+		.orderId {
+			font-size: 17px;
+			font-weight: 600;
+		}
+
+		.goods {
+			font-size: 15px;
+			padding-top: 2px;
+		}
+
+		.address {
+			width: 100%;
+			height: 50px;
+			background: #FFFFFF;
+			z-index: 999;
+			position: relative;
+		}
+
+		.all {
+			width: 80%;
+			margin: 0 10%;
+			display: flex;
+		}
+
+		.send {
+			line-height: 50px;
+			width: 40%;
+			text-align: center;
+			font-size: 15px;
+		}
+
+		.point {
+			line-height: 50px;
+			width: 20%;
+			margin-top: -4px;
+		}
+
+		.img {
+			width: 100%;
+			height: 10px;
+		}
+
+		.get {
+			line-height: 50px;
+			width: 40%;
+			text-align: center;
+			font-size: 15px;
+		}
+
+		#container {
+			position: absolute;
+			width: 100%;
+			height: 100vh;
+		}
+
+		.car {
+			position: relative;
+			overflow-y: scroll;
+			height: 30vh;
+			z-index: 999;
+			width: 90%;
+			left: 5%;
+			top: 70vh;
+		}
+
+		.carMsg {
+			/* height: 200px; */
+			background: #ffffff;
+			border-radius: 10px;
+			padding-top: 23px;
+			padding-left: 35%;
+		}
+
+		.timeStamp {
+			position: absolute;
+			top: -2px;
+			left: -90px;
+			font-size: 13px;
+			color: #bbb;
+			text-align: right;
+		}
+
+		.msg {
+			min-width: 50px !important;
+			background-color: rgb(88, 88, 88);
+			padding: 10px 20px 10px 20px;
+			border-radius: 10px;
+		}
+
+		.el-message__content {
+			color: #fff !important;
+		}
+
+		.el-icon-info {
+			display: none;
+		}
+		.el-dialog__body{
+			height:300px;
+		}
+	</style>
+
+	<body>
+		<div class="content" id="app" v-cloak>
+			<div id="container">
+				<div class="box">
+					<div class="msg1">
+						<div class="orderId">
+							<span>派车单号：</span>
+							<span>{{form.sendvehicleNo}}</span>
+						</div>
+						<div class="goods">
+							<span>{{form.goodsName}}</span>
+							<span>/</span>
+							<span>数量</span>
+							<span>{{form.goodsNumber}}</span>
+							<span>/</span>
+							<span>{{form.goodsWeight}}</span>
+							<span>吨</span>
+							<span>/</span>
+							<span>{{form.goodsVolume}}</span>
+							<span>m³</span>
+						</div>
+					</div>
+					<div class="box-con">
+						<div class="box-text">{{form.transportType}}</div>
+					</div>
+				</div>
+				<div class="address">
+					<div class="all">
+						<div class="send">
+							{{form.consignorAddressName}}
+						</div>
+						<div class="point">
+							<image class="img" src="../../static/image/order/line.png"></image>
+						</div>
+						<div class="get">
+							{{form.consigneeAddressName}}
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="car" id="carMsg">
+				<div class="carMsg">
+					<el-timeline :reverse="reverse">
+						<el-timeline-item v-for="(item, index) in tradeData" :key="index" :type="item.type" hide-timestamp>
+							<div>
+								{{item.place}}
+							</div>
+							<div style="margin-top:5px">操作人:{{ item.createName }}</div>
+							<br />
+							<div class="timeStamp">
+								<div>
+									{{ item.data }}
+								</div>
+								<div>
+									{{ item.time }}
+								</div>
+								<el-button type="text" v-if="item.attachmentUrl != null" @click="showImage(item.attachmentUrl)">查看附件</el-button>
+							</div>
+						</el-timeline-item>
+					</el-timeline>
+				</div>
+			</div>
+
+			<el-dialog title="附件" :visible.sync="centerDialogVisible" width="100%" center>
+				<img :src="imgSrc" style="height: 100%;width: 100%;">
+			</el-dialog>
+		</div>
+	</body>
+
+	<script>
+		let baseUrl = "http://platform.fjzcht.com/owner/";
+		// let baseUrl = "http://47.99.107.169:13100/owner/";
+
+		document.addEventListener("UniAppJSBridgeReady", function() {
+			//getMap();
+		});
+
+		var vueEntity = new Vue({
+			el: "#app",
+			data() {
+				return {
+					height: "153px",
+
+					reverse: false,
+					tradeData: [],
+
+					pointArr: [],
+					marker: "",
+
+					form: {
+						sendvehicleNo: "",
+						transportType: "",
+						goodsName: "",
+						goodsNumber: "",
+						goodsVolume: "",
+						goodsWeight: "",
+						consignorAddressName: "",
+						consigneeAddressName: ""
+					},
+					centerDialogVisible: false,
+					imgSrc: ""
+				}
+			},
+			methods: {
+				getData(name) {
+					var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)");
+					var r = window.location.search.substr(1).match(reg);
+					if (r != null) return unescape(r[2]);
+					return null;
+				},
+				getRemark(token, waybillSendId, orderNo) {
+					let url = "core/omssrvorder/trackfindlist";
+					let _self = this;
+					axios({
+						url: baseUrl + url,
+						method: 'post',
+						params: {
+							waybillSendId: waybillSendId,
+							orderCode: orderNo
+						},
+						headers: {
+							'Authorization': token,
+							'Content-Type': 'application/x-www-form-urlencoded'
+						}
+					}).then((res) => {
+						if (res.data.code == 200) {
+							let arr = res.data.data;
+							for (let i in arr) {
+								let timeArr = arr[i].createTime.split(" ");
+								let timeArr1 = timeArr[1].split(":");
+								arr[i].time = timeArr1[0] + ":" + timeArr1[1];
+								arr[i].data = timeArr[0];
+								if (arr[i].createName == "" || arr[i].createName == null) {
+									arr[i].createName = "未知";
+								}
+								arr[i].type = "primary";
+							}
+
+							let length = arr.length;
+							if (length == 0) {
+								document.getElementById("carMsg").remove();
+							}
+							_self.tradeData = arr;
+						} else {
+							_self.showMessage("出错了");
+						}
+					})
+				},
+				showMessage(msg) {
+					let _self = this;
+					let option = {
+						message: msg,
+						type: "info",
+						center: true,
+						offset: 250,
+						customClass: "msg"
+					};
+					_self.$message(option);
+
+					setTimeout(() => {
+						uni.navigateBack();
+					}, 3000);
+				},
+				getMapDate(token, beginTime, busNum, orderNo, signTime) {
+					let params = {
+						beginTime: beginTime,
+						busNum: busNum,
+						orderNo: orderNo,
+						signTime: signTime
+					};
+					axios({
+						url: baseUrl + 'core/omssrvorder/queryBusTrack',
+						method: 'post',
+						params,
+						headers: {
+							'token': token,
+							'Content-Type': 'application/x-www-form-urlencoded'
+						}
+					}).then((res) => {
+						if (res.data.code == 200) {
+							if (res.data.data.length == 1) {
+								let obj = JSON.parse(res.data.data[0].lng);
+
+								let arrAll = [];
+								obj.forEach(item => {
+									let arr = [];
+									arr.push(item.Lon);
+									arr.push(item.Lat);
+									arrAll.push(arr);
+								})
+								this.pointArr = arrAll;
+								this.getMaps();
+							}
+						} else {
+							_self.showMessage("出错了");
+						}
+					})
+				},
+				getMaps() {
+					let lineArr = this.pointArr;
+					var map = new AMap.Map("container", {
+						resizeEnable: true,
+						center: [116.397428, 39.90923],
+						zoom: 17
+					});
+
+					this.marker = new AMap.Marker({
+						map: map,
+						position: [116.478935, 39.997761],
+						icon: "https://webapi.amap.com/images/car.png",
+						offset: new AMap.Pixel(-26, -13),
+						autoRotation: true,
+						angle: -90
+					});
+
+					// 绘制轨迹
+					var polyline = new AMap.Polyline({
+						map: map,
+						path: lineArr,
+						showDir: true,
+						strokeColor: "#28F", //线颜色
+						strokeWeight: 6 //线宽
+					});
+
+					var passedPolyline = new AMap.Polyline({
+						map: map,
+						strokeColor: "#AF5", //线颜色
+						strokeWeight: 6 //线宽
+					});
+
+					this.marker.on("moving", function(e) {
+						passedPolyline.setPath(e.passedPath);
+					});
+
+					//map.setFitView();
+
+					let length = lineArr.length;
+					let intNum = parseInt(length / 1000);
+					let run = 200;
+					let zoom = 17;
+					if (intNum > 1) {
+						run = 100 * intNum;
+						zoom = 17 - intNum;
+					}
+
+					let num1 = lineArr[0];
+					map.setZoomAndCenter(zoom, num1);
+
+					this.marker.moveAlong(lineArr, run);
+				},
+				getSend(token, waybillSendId) {
+					let params = {
+						sendvehicleId: waybillSendId
+					}
+					axios({
+						url: baseUrl + 'core/omssrvorder/waybillsendinfo',
+						method: 'get',
+						params,
+						headers: {
+							'token': token,
+							'Content-Type': 'application/x-www-form-urlencoded'
+						}
+					}).then((res) => {
+						if (res.data.code == 200) {
+							let data = res.data.data;
+							let transportType = data.transportType;
+							if (transportType == "HIGHWAY") {
+								this.form.transportType = "公路运输";
+							} else if (transportType == "SHIPPING") {
+								this.form.transportType = "海上运输";
+							} else if (transportType == "AIR") {
+								this.form.transportType = "航空运输";
+							} else if (transportType == "RAILWAY") {
+								this.form.transportType = "铁路运输";
+							}
+
+							this.form.sendvehicleNo = data.sendvehicleNo;
+							this.form.goodsName = data.goodsName;
+							this.form.goodsNumber = data.goodsNumber;
+							this.form.goodsVolume = data.goodsVolume;
+							this.form.goodsWeight = data.goodsWeight;
+
+							let consignorAddressName = data.consignorAddressName.substring(0, data.consignorAddressName.lastIndexOf(","));
+							this.form.consignorAddressName = consignorAddressName.replace(/[\u5E02\u8F96\u533A\u7701,]*/g, '');
+
+							let consigneeAddressName = data.consigneeAddressName.substring(0, data.consigneeAddressName.lastIndexOf(","));
+							this.form.consigneeAddressName = consigneeAddressName.replace(/[\u5E02\u8F96\u533A\u7701,]*/g, '');
+
+						} else {
+							_self.showMessage("出错了");
+						}
+					})
+				},
+				showImage(image) {
+					if (image != null) {
+						this.imgSrc = image;
+						this.centerDialogVisible = true;
+					} else {
+						this.imgSrc = "";
+						this.showMessage("暂无附件");
+					}
+				}
+			},
+			mounted() {
+				let token = this.getData("name");
+				let beginTime = this.getData("beginTime");
+				let busNum = this.getData("busNum");
+				let orderNo = this.getData("orderNo");
+				let signTime = this.getData("signTime");
+				let waybillSendId = this.getData("waybillSendId");
+
+				this.getSend(token, waybillSendId);
+				this.getMapDate(token, beginTime, busNum, orderNo, signTime);
+				this.getRemark(token, waybillSendId, orderNo);
+			}
+		});
+	</script>
+</html>
